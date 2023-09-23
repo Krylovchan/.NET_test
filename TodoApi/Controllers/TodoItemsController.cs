@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using TodoApi.Models;
+using TodoApi.Services;
 
 namespace TodoApi.Controllers;
 
@@ -9,19 +10,23 @@ namespace TodoApi.Controllers;
 public class TodoItemsController : ControllerBase
 {
     private readonly TodoContext _context;
+    private readonly ITodoRepository _todoRepository;
 
-    public TodoItemsController(TodoContext context)
+    public TodoItemsController(TodoContext context, ITodoRepository todoRepository)
     {
         _context = context;
+        _todoRepository = todoRepository;
     }
 
     // GET: api/TodoItems
     [HttpGet]
     public async Task<ActionResult<IEnumerable<TodoItemDTO>>> GetTodoItems()
     {
-        return await _context.TodoItems
-            .Select(x => ItemToDTO(x))
-            .ToListAsync();
+       
+        // var todoItem = await _todoRepository.GetAll();
+           /* .Select(x => ItemToDTO(x))
+            .ToListAsync();*/
+          return (null);
     }
 
     // GET: api/TodoItems/5
@@ -29,12 +34,7 @@ public class TodoItemsController : ControllerBase
     [HttpGet("{id}")]
     public async Task<ActionResult<TodoItemDTO>> GetTodoItem(long id)
     {
-        var todoItem = await _context.TodoItems.FindAsync(id);
-
-        if (todoItem == null)
-        {
-            return NotFound();
-        }
+        var todoItem = await _todoRepository.Get(id);
 
         return ItemToDTO(todoItem);
     }
@@ -52,6 +52,7 @@ public class TodoItemsController : ControllerBase
         }
 
         var todoItem = await _context.TodoItems.FindAsync(id);
+        
         if (todoItem == null)
         {
             return NotFound();
@@ -84,14 +85,8 @@ public class TodoItemsController : ControllerBase
             IsComplete = todoDTO.IsComplete,
             Name = todoDTO.Name
         };
-
-        _context.TodoItems.Add(todoItem);
-        await _context.SaveChangesAsync();
-
-        return CreatedAtAction(
-            nameof(GetTodoItem),
-            new { id = todoItem.Id },
-            ItemToDTO(todoItem));
+        
+        return CreatedAtAction(nameof(GetTodoItem), new { id = todoItem.Id }, ItemToDTO(todoItem));
     }
     // </snippet_Create>
 
