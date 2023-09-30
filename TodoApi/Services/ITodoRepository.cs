@@ -11,7 +11,7 @@ namespace TodoApi.Services
         List<TodoItem> GetAll();
         Task<EntityEntry<TodoItem>> Add(TodoItem todoDTO);
         Task<int> Remove(long id);
-        Task<int> Edit(long id, TodoItemDTO todoDTO);
+        Task<int> Edit(long id, TodoItem todoDTO);
 
 
     }

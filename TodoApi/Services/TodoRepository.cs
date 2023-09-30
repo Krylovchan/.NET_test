@@ -33,7 +33,7 @@ public class TodoRepository : ITodoRepository
         return  _context.TodoItems.Add(todoDTO);
     }
 
-    public async Task<int> Edit(long id, TodoItemDTO todoDTO)
+    public async Task<int> Edit(long id, TodoItem todoDTO)
     {
         var todoItem = await _context.TodoItems.FindAsync(id);
         
